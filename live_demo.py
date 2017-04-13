@@ -36,8 +36,7 @@ my_model = create_model(model=args["model"],
                         model_weights_path=args["weights"])
 
 # Dictionary to convert numerical classes to alphabet
-label_dict = {}
-label_dict = {label_dict[pos]: letter
+label_dict = {pos: letter
               for pos, letter in enumerate(string.ascii_uppercase)}
 
 
