@@ -14,12 +14,12 @@ MODELS = {
 }
 
 
-def create_model(model, model_weights_path=None):
+def create_model(model, model_weights_path=None, top_model=True):
     """Create custom model for transfer learning
 
     Steps:
     (i) load pre-trained NN architecture
-    (ii) add custom classification block of two fully connected layers
+    (ii) (optional) add custom classification block of two fully connected layers
     (iii) load pre-trained model weights, if available
 
     Parameters
@@ -28,6 +28,8 @@ def create_model(model, model_weights_path=None):
         choose which pre-trained Keras deep learning model to use for the 'bottom' layers of the custom model
     model_weights_path: str
         path to pre-trained weights, if available
+    top_model: bool
+        whether to include custom classification block, or to load model 'without top' to extract features
 
     Returns
     -------
@@ -35,22 +37,26 @@ def create_model(model, model_weights_path=None):
         Model utilised for prediction or training
     """
 
+    # ensure a valid model name was supplied
+    if model not in MODELS.keys():
+        raise AssertionError("The model parameter must be a key in the `MODELS` dictionary")
+
     # Create pre-trained model without classification block
     print("[INFO] loading %s..." % (model,))
     model = MODELS[model](include_top=False,
                           input_tensor=Input(shape=(224, 224, 3)))
+    if top_model:
+        # Create classification block
+        top_model = Sequential()
+        top_model.add(Flatten(input_shape=model.output_shape[1:]))
+        top_model.add(Dense(256, activation='relu'))
+        top_model.add(Dropout(0.5))
+        top_model.add(Dense(26, activation='softmax'))
 
-    # Create classification block
-    top_model = Sequential()
-    top_model.add(Flatten(input_shape=model.output_shape[1:]))
-    top_model.add(Dense(256, activation='relu'))
-    top_model.add(Dropout(0.5))
-    top_model.add(Dense(26, activation='softmax'))
-
-    # Join model + classification block
-    print("[INFO] creating model.")
-    my_model = Model(inputs=model.input,
-                     outputs=top_model(model.output))
+        # Join model + classification block
+        print("[INFO] creating model.")
+        my_model = Model(inputs=model.input,
+                         outputs=top_model(model.output))
 
     if model_weights_path is not None:
         # Load pre-trained model weights
