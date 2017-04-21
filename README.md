@@ -26,15 +26,16 @@ When running the script, you must choose the pre-trained  model you wish to use.
 
 ```bash
 $ python live_demo.py --help
-usage: live_demo.py [-h] -m MODEL [-w WEIGHTS]
+usage: live_demo.py [-h] [-w WEIGHTS] -m MODEL
 
 optional arguments:
   -h, --help            show this help message and exit
-  -m MODEL, --model     MODEL
-                        name of pre-trained network to use
   -w WEIGHTS, --weights WEIGHTS
                         path to the model weights
 
+required arguments:
+  -m MODEL, --model MODEL
+                        name of pre-trained network to use
 ```
 
 NOTE - On a MacBook Pro (macOS SIERRA 16GB 1600MHz DDR3/2.2 GHz Intel Core i7), it takes ~250ms/frame to classify resulting in  lag during real-time classification. The effective frame rate is only 5-10 frames can effectively be processed; however, this is significantly improved if running on a GPU.
