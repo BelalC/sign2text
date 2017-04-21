@@ -15,11 +15,11 @@ import argparse
 import numpy as np
 
 ap = argparse.ArgumentParser()
+ap.add_argument("-m", "--model",
+                type=str, default="resnet", required=True,
+                help="name of pre-trained network to use")
 ap.add_argument("-w", "--weights", default=None,
                 help="path to the model weights")
-ap.add_argument("-m", "--model",
-                type=str, default="resnet",
-                help="name of pre-trained network to use")
 args = vars(ap.parse_args())
 
 
