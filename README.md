@@ -38,7 +38,7 @@ required arguments:
                         name of pre-trained network to use
 ```
 
-NOTE - On a MacBook Pro (macOS SIERRA 16GB 1600MHz DDR3/2.2 GHz Intel Core i7), it takes ~250ms/frame to classify resulting in  lag during real-time classification. The effective frame rate is only 5-10 frames can effectively be processed; however, this is significantly improved if running on a GPU.
+NOTE - On a MacBook Pro (macOS SIERRA 16GB 1600MHz DDR3/2.2 GHz Intel Core i7) using the CPU only, it takes ~250ms to classify a single frame. This results in lag during real-time classification as the effective frame rate is only 5-10 frames. Performance is significantly improved if running on a GPU.
 
 # 1. American Sign Language
 
