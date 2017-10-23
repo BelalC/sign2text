@@ -9,6 +9,7 @@ and classifies American Sign Language finger spelling frame-by-frame in real-tim
 
 import string
 import cv2
+import time
 from processing import square_pad, preprocess_for_vgg
 from model import create_model
 import argparse
@@ -28,7 +29,8 @@ args = vars(ap.parse_args())
 # =======================================================
 
 # Map model names to classes
-MODELS = ["resnet", "vgg16", "inception", "xception"]
+MODELS = ["resnet", "vgg16", "inception", "xception", "mobilenet"]
+
 if args["model"] not in MODELS:
     raise AssertionError("The --model command line argument should be a key in the `MODELS` dictionary")
 
@@ -46,9 +48,13 @@ label_dict = {pos: letter
 
 video_capture = cv2.VideoCapture(0)
 
+fps = 0
+start = time.time()
+
 while True:
     # Capture frame-by-frame
     ret, frame = video_capture.read()
+    fps += 1
 
     # Draw rectangle around face
     x = 313
@@ -107,6 +113,12 @@ while True:
     if cv2.waitKey(10) & 0xFF == ord('q'):
         break
 
+# Calculate frames per second
+end = time.time()
+FPS = fps/(end-start)
+print("[INFO] approx. FPS: {:.2f}".format(FPS))
+
 # Release the capture
 video_capture.release()
 cv2.destroyAllWindows()
+

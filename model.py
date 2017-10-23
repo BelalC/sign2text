@@ -1,23 +1,32 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from keras.applications import ResNet50, VGG16, InceptionV3, Xception
+from keras.applications.vgg16 import VGG16
+from keras.applications.resnet50 import ResNet50
+from keras.applications.inception_v3 import InceptionV3
+from keras.applications.xception import Xception
+from keras.applications.mobilenet import MobileNet
+
 from keras.layers import Flatten, Dense, Dropout, Input
 from keras.models import Sequential, Model
+
+import argparse
 
 # Map model names to classes
 MODELS = {
     "vgg16": VGG16,
     "inception": InceptionV3,
     "xception": Xception,
-    "resnet": ResNet50
+    "resnet": ResNet50,
+    "mobilenet": MobileNet
 }
 
 # Define path to pre-trained classification block weights - this is
-vgg_weights_path = "weights/vgg16_pretrain_weights.h5"
-# res_weights_path = "weights/vgg16_pretrain_weights.h5"
+vgg_weights_path = "weights/snapshot_vgg_weights.hdf5"
+res_weights_path = "weights/snapshot_res_weights.hdf5"
+mob_weights_path = "weights/snapshot_mob_weights.hdf5"
 
-def create_model(model, model_weights_path=None, top_model=True):
+def create_model(model, model_weights_path=None, top_model=True, color_mode="rgb", input_shape=None):
     """Create custom model for transfer learning
 
     Steps:
@@ -33,6 +42,8 @@ def create_model(model, model_weights_path=None, top_model=True):
         optional path to weights for classification block; otherwise, pre-trained weights will be loaded
     top_model: bool
         whether to include custom classification block, or to load model 'without top' to extract features
+    color_mode: str
+        whether the image is gray scale or RGB; this will determine number of channels of model input layer
 
     Returns
     -------
@@ -44,10 +55,16 @@ def create_model(model, model_weights_path=None, top_model=True):
     if model not in MODELS.keys():
         raise AssertionError("The model parameter must be a key in the `MODELS` dictionary")
 
+    # gray scale or color
+    if color_mode == "grayscale":
+        num_channels = 1
+    else:
+        num_channels = 3
+
     # Create pre-trained model for feature extraction, without classification block
     print("[INFO] loading %s..." % (model,))
     model = MODELS[model](include_top=False,
-                          input_tensor=Input(shape=(224, 224, 3)))
+                          input_shape=(224,224,3))
 
     # For transfer learning
     if top_model:
@@ -74,6 +91,11 @@ def create_model(model, model_weights_path=None, top_model=True):
         elif model == "resnet":
             # pre-trained weights for transfer learning with ResNet50
             print("ResNet50 pre-trained weights are not available yet, please use VGG16 for now!")
-            # my_model.load_weights(res_weights_path)
-
-    return my_model
+            my_model.load_weights(res_weights_path)
+        elif model == "mobnet":
+            # pre-trained weights for transfer learning with ResNet50
+            print("ResNet50 pre-trained weights are not available yet, please use VGG16 for now!")
+            my_model.load_weights(mob_weights_path)
+        return my_model
+    else:
+        return model
