@@ -1,24 +1,26 @@
 # sign2text
 ### Real-time AI-powered translation of American sign language to text
 
-This repository contains the code & weights for classifying American Sign Language (ASL) alphabet in real-time using deep learning. The project focuses on American Sign Language (ASL), and specifically the ASL alphabet (26 letters). I utilised transfer learning to extract features followed by a custom classification block. 
+The project focuses on translating American Sign Language (ASL) [fingerspelled alphabet](http://lifeprint.com/asl101/topics/wallpaper1.htm) (26 letters). I utilised transfer learning to extract features, followed by a custom classification block to classify letters. This model is then implemented in a real-time system with OpenCV - reading frames from a web camera and classifying them frame-by-frame. This repository contains the code & weights for classifying the American Sign Language (ASL) alphabet in real-time.
 
-This project was developed as my portfolio project at the Data Science Retreat (Batch 09) in Berlin. Please feel free to fork/comment/collaborate!
+This project was developed as my portfolio project at the Data Science Retreat (Batch 09) in Berlin. Please feel free to fork/comment/collaborate! Presentation slides are available in the repo :)
 
 # Usage 
 
 The entire pipeline (web camera -> image crop -> pre-processing -> classification) can be executed by running the live_demo.py script.
 
-The live_demo.py script loads a pre-trained model (VGG16 or ResNet50) with a custom classification block, and classifies American Sign Language fingerspelling frame-by-frame in real-time. The script will automatically access your web camera and open up a window with the live camera feed. A rectangular region of interest (ROI) is shown on the camera feed; this ROI is cropped and passed to the classifier, which returns the top 3 letter predictions. The largest letter shown is the top prediction, and the bottom 2 letters are the second (left) and third (right) most probable predictions. The architecture of the classification block is described further in Sections 4/5.
+The live_demo.py script loads a pre-trained model ([VGG16](https://keras.io/applications/#vgg16)/[ResNet50](https://keras.io/applications/#resnet50)/[MobileNet](https://keras.io/applications/#mobilenet)) with a custom classification block, and classifies the ASL alphabet frame-by-frame in real-time. The script will automatically access your web camera and open up a window with the live camera feed. A rectangular region of interest (ROI) is shown on the camera feed. This ROI is cropped and passed to the classifier, which returns the top 3 predictions. The largest letter shown is the top prediction, and the bottom 2 letters are the second (left) and third (right) most probable predictions. The architecture of the classification block will be described further in Sections 4/5.
 
 ## Dependencies
 The code was developed with python 3.5 and requires the following libraries/versions:
 
-- OpenCV 3.0.0
-- keras 2.0.1
+- OpenCV 3.1.0
+- keras 2.0.8
 - tensorflow-gpu 1.0.1 (It can also work with non gpu version)
-- numpy 1.12.0
+- numpy 1.13.3
 - joblib 0.10.3
+
+NOTE - feature extraction using the pre-trained models in Keras was run on an AWS EC2 p2.8xlarge instance with the [Bitfusion Ubuntu 14 TensorFlow-2017 AMI](https://aws.amazon.com/marketplace/pp/B01EYKBEQ0). Packages had to be manually updated, and Python 2 is the standard version. You can either update to Python 3, or edit the scripts to work with Python 2 (the only issues should be the print statements)
 
 ## Running the Live Demo
    
@@ -38,7 +40,7 @@ required arguments:
                         name of pre-trained network to use
 ```
 
-NOTE - On a MacBook Pro (macOS SIERRA 16GB 1600MHz DDR3/2.2 GHz Intel Core i7) using the CPU only, it takes ~250ms to classify a single frame. This results in lag during real-time classification as the effective frame rate is only 5-10 frames. Performance is significantly improved if running on a GPU.
+NOTE - On a MacBook Pro (macOS SIERRA 16GB 1600MHz DDR3/2.2 GHz Intel Core i7) using the CPU only, it can take up to ~250ms to classify a single frame. This results in lag during real-time classification as the effective frame rate is anywhere from 1-10 frames per second,  depending on which model is running. MobileNet is the most efficient model. Performance for all models is is significantly improved if running on a GPU. 
 
 # 1. American Sign Language
 
@@ -50,12 +52,18 @@ The ASL alphabet is 'fingerspelled' - this means all of the alphabet (26 letters
 (ii) Emphasising a point (i.e. literally spelling out a word)
 (iii) When saying a word not present in the ASL dictionary (the current Oxford English dictionary has ~170,000 words while estimates for ASL range from 10,000-50,000 words)
 
+This project is a (very small!) first step towards bridging the gap between 'signers' and 'non-signers'.
+
 # 2. Pre-processing
-coming soon
+coming soon I promise
 # 3. Transfer learning & feature extraction
 coming soon
 # 4. Training
 coming soon
+# 5. Real-time system
+coming soon
 
-# 5. References
+# 6. References
 https://research.gallaudet.edu/Publications/ASL_Users.pdf
+https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html
+
