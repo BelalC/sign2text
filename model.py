@@ -64,7 +64,7 @@ def create_model(model, model_weights_path=None, top_model=True, color_mode="rgb
     # Create pre-trained model for feature extraction, without classification block
     print("[INFO] loading %s..." % (model,))
     model = MODELS[model](include_top=False,
-                          input_shape=(224,224,3))
+                          input_shape=(224, 224, 3))
 
     # For transfer learning
     if top_model:
@@ -75,27 +75,27 @@ def create_model(model, model_weights_path=None, top_model=True, color_mode="rgb
         top_model.add(Dropout(0.5))
         top_model.add(Dense(26, activation='softmax'))
 
-        # Join pre-loaded model + classification block
-        print("[INFO] creating model.")
-        my_model = Model(inputs=model.input,
-                         outputs=top_model(model.output))
-
         # Load weights for classification block
         print("[INFO] loading model weights.")
         if model_weights_path is not None:
             # user-supplied weights
-            my_model.load_weights(model_weights_path)
+            top_model.load_weights(model_weights_path)
         elif model == "vgg16":
             # pre-trained weights for transfer learning with VGG16
-            my_model.load_weights(vgg_weights_path)
+            top_model.load_weights(vgg_weights_path)
         elif model == "resnet":
             # pre-trained weights for transfer learning with ResNet50
             print("ResNet50 pre-trained weights are not available yet, please use VGG16 for now!")
-            my_model.load_weights(res_weights_path)
+            top_model.load_weights(res_weights_path)
         elif model == "mobnet":
             # pre-trained weights for transfer learning with ResNet50
             print("ResNet50 pre-trained weights are not available yet, please use VGG16 for now!")
-            my_model.load_weights(mob_weights_path)
+            top_model.load_weights(mob_weights_path)
+
+        # Join pre-loaded model + classification block
+        print("[INFO] creating model.")
+        my_model = Model(inputs=model.input,
+                         outputs=top_model(model.output))
         return my_model
     else:
         return model
