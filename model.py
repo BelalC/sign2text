@@ -72,7 +72,6 @@ def create_model(model, model_weights_path=None, top_model=True, color_mode="rgb
         top_model = Sequential()
         top_model.add(Flatten(input_shape=model.output_shape[1:]))
         top_model.add(Dense(256, activation='relu'))
-        top_model.add(Dropout(0.5))
         top_model.add(Dense(26, activation='softmax'))
 
         # Load weights for classification block
