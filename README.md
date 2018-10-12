@@ -12,12 +12,12 @@ The entire pipeline (web camera -> image crop -> pre-processing -> classificatio
 The live_demo.py script loads a pre-trained model ([VGG16](https://keras.io/applications/#vgg16)/[ResNet50](https://keras.io/applications/#resnet50)/[MobileNet](https://keras.io/applications/#mobilenet)) with a custom classification block, and classifies the ASL alphabet frame-by-frame in real-time. The script will automatically access your web camera and open up a window with the live camera feed. A rectangular region of interest (ROI) is shown on the camera feed. This ROI is cropped and passed to the classifier, which returns the top 3 predictions. The largest letter shown is the top prediction, and the bottom 2 letters are the second (left) and third (right) most probable predictions. The architecture of the classification block will be described further in Sections 4/5.
 
 ## Dependencies
-The code was developed with python 3.5 and requires the following libraries/versions:
+The code was developed with python 3.5 and has been tested with the following libraries/versions:
 
 - OpenCV 3.1.0
-- keras 2.0.8
-- tensorflow-gpu 1.0.1 (It can also work with non gpu version)
-- numpy 1.13.3
+- Keras 2.0.8
+- tensorflow 1.11 (cpu version), it will also run with the gpu-version
+- numpy 1.15.2
 - joblib 0.10.3
 
 NOTE - feature extraction using the pre-trained models in Keras was run on an AWS EC2 p2.8xlarge instance with the [Bitfusion Ubuntu 14 TensorFlow-2017 AMI](https://aws.amazon.com/marketplace/pp/B01EYKBEQ0). Packages had to be manually updated, and Python 2 is the standard version. You can either update to Python 3, or edit the scripts to work with Python 2 (the only issues should be the print statements)
