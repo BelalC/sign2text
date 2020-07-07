@@ -5,6 +5,12 @@ The project focuses on translating American Sign Language (ASL) [fingerspelled a
 
 This project was developed as my portfolio project at the Data Science Retreat (Batch 09) in Berlin. Please feel free to fork/comment/collaborate! Presentation slides are available in the repo :)
 
+Dataset - Google Drive link - https://drive.google.com/drive/folders/1-t8rgN3eOW99KGDy7U0HJhrbbwOe-5Wh?usp=sharing
+
+All the data is already split into train/validation subsets, and labelled with letters from A-Z. 
+
+NOTE - the Massey dataset I've included is already pre-processed and is only a subset of the entire dataset (part 5). I added padding due to odd shaped images, and also dropped a colour channel as there was a lot of green screen background in the images. Dropping the colour channel didn't cause any significant changes in performance so I've left it in. You can get the raw data directly from Massey University.
+
 # Usage 
 
 The entire pipeline (web camera -> image crop -> pre-processing -> classification) can be executed by running the live_demo.py script.
