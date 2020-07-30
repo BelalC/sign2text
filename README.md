@@ -5,7 +5,7 @@ The project focuses on translating American Sign Language (ASL) [fingerspelled a
 
 This project was developed as my portfolio project at the Data Science Retreat (Batch 09) in Berlin. Please feel free to fork/comment/collaborate! Presentation slides are available in the repo :)
 
-Dataset - Google Drive link - https://drive.google.com/drive/folders/1-t8rgN3eOW99KGDy7U0HJhrbbwOe-5Wh?usp=sharing
+Dataset - https://drive.google.com/drive/folders/1-t8rgN3eOW99KGDy7U0HJhrbbwOe-5Wh?usp=sharing
 
 All the data is already split into train/validation subsets, and labelled with letters from A-Z. 
 
