@@ -4,22 +4,17 @@
 
 """
 TRANSFER LEARNING
-This script loads pre-trained deep neural network models included in Keras with a custom classification block,
+This script loads pre-trained deep neural network models included in TensorFlow/Keras with a custom classification block,
 and trains the new model.
 """
 
 
-from keras.applications.vgg16 import VGG16
-from keras.applications.resnet50 import ResNet50
-from keras.applications.inception_v3 import InceptionV3
-from keras.applications.xception import Xception
-from keras.applications.mobilenet import MobileNet
-
-from keras.layers import Flatten, Dense, Input, Dropout
-from keras.models import Sequential, Model
-from keras.callbacks import ModelCheckpoint, Callback
-from keras.preprocessing.image import ImageDataGenerator
-from keras.optimizers import Adadelta, Adagrad, Adam, Adamax, Nadam
+from tensorflow.keras.applications import VGG16, ResNet50, InceptionV3, Xception, MobileNet
+from tensorflow.keras.layers import Flatten, Dense, Input, Dropout
+from tensorflow.keras.models import Sequential, Model
+from tensorflow.keras.callbacks import ModelCheckpoint, Callback
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.optimizers import Adadelta, Adagrad, Adam, Adamax, Nadam
 
 import numpy as np
 import argparse
@@ -73,7 +68,7 @@ else:
 print("[INFO] loading {}...".format(args["model"]))
 Network = MODELS[args["model"]]
 model = Network(include_top=False,
-                weights="imagenet",
+                weights=None,
                 input_tensor=Input(shape=shape))
 print("[INFO] model loaded.")
 
@@ -111,7 +106,7 @@ my_model.compile(optimizer=Adadelta(),
 filepath = "snapshot" + args["model"] + "_weights.hdf5"
 
 save_snapshots = ModelCheckpoint(filepath,
-                                 monitor='val_acc',
+                                 monitor='val_accuracy',
                                  save_best_only=True,
                                  save_weights_only=True,
                                  mode='max',
@@ -120,13 +115,17 @@ save_snapshots = ModelCheckpoint(filepath,
 
 # Save loss history
 class LossHistory(Callback):
-    def on_train_begin(self, logs={}):
+    def on_train_begin(self, logs=None):
+        if logs is None:
+            logs = {}
         self.losses = []
         self.accuracy = []
 
-    def on_batch_end(self, batch, logs={}):
+    def on_batch_end(self, batch, logs=None):
+        if logs is None:
+            logs = {}
         self.losses.append(logs.get('loss'))
-        self.accuracy.append(logs.get('acc'))
+        self.accuracy.append(logs.get('accuracy'))
 
 loss_history = LossHistory()
 
@@ -172,16 +171,15 @@ validation_steps = int(test_generator.samples//batch_size)
 ##############################
 
 # train model
-my_history = my_model.fit_generator(
-    generator=train_generator,
+my_history = my_model.fit(
+    x=train_generator,
     steps_per_epoch=steps_per_epoch,
     epochs=epochs,
     verbose=1,
     callbacks=callbacks_list,
     validation_data=test_generator,
     validation_steps=validation_steps,
-    class_weight=None, max_q_size=10,
-    pickle_safe=False)
+    class_weight=None)
 
 # save_loss_history = loss_history.losses
 # save_accuracy_history = loss_history.accuracy
@@ -190,9 +188,9 @@ my_history = my_model.fit_generator(
 my_model.save_weights('my_model_weights.h5')
 
 evaluation_cost = my_history.history['val_loss']
-evaluation_accuracy = my_history.history['val_acc']
+evaluation_accuracy = my_history.history['val_accuracy']
 training_cost = my_history.history['loss']
-training_accuracy = my_history.history['acc']
+training_accuracy = my_history.history['accuracy']
 
 np.save("evaluation_cost.npy", evaluation_cost)
 np.save("evaluation_accuracy.npy", evaluation_accuracy)

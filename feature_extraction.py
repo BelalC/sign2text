@@ -4,15 +4,11 @@
 """
 FEATURE EXTRACTION
 This script extracts features from the final (non-classification) layers of
-the pre-trained deep neural network models included in Keras.
+the pre-trained deep neural network models included in TensorFlow/Keras.
 """
 
-from keras.applications.vgg16 import VGG16
-from keras.applications.resnet50 import ResNet50
-from keras.applications.inception_v3 import InceptionV3
-from keras.applications.xception import Xception
-from keras.applications.mobilenet import MobileNet
-from keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.applications import VGG16, ResNet50, InceptionV3, Xception, MobileNet
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from model import create_model
 
 import numpy as np
@@ -70,7 +66,7 @@ input_shape = (224, 224, 3)
 
 # load pre-trained transfer learning model
 print("[INFO] loading {}...".format(args["model"]))
-transfer_model = create_model(model=args["model"],
+transfer_model = create_model(model_name=args["model"],
                               top_model=False,
                               color_mode=args["colour"],
                               input_shape=input_shape)
@@ -116,10 +112,10 @@ test_steps_per_epoch = int(test_generator.samples//batch_size)
 
 # extract features
 print("[INFO] extracting training features...")
-train_bottleneck_features = transfer_model.predict_generator(train_generator, steps=train_steps_per_epoch)
+train_bottleneck_features = transfer_model.predict(train_generator, steps=train_steps_per_epoch, verbose=1)
 
 print("[INFO] extracting test features...")
-test_bottleneck_features = transfer_model.predict_generator(test_generator, steps=test_steps_per_epoch)
+test_bottleneck_features = transfer_model.predict(test_generator, steps=test_steps_per_epoch, verbose=1)
 
 # save bottleneck features
 print("[INFO] saving features...")

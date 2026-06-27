@@ -14,6 +14,7 @@ from processing import square_pad, preprocess_for_vgg
 from model import create_model
 import argparse
 import numpy as np
+import os
 
 ap = argparse.ArgumentParser()
 ap.add_argument("-w", "--weights", default=None,
@@ -35,7 +36,7 @@ if args["model"] not in MODELS:
     raise AssertionError("The --model command line argument should be a key in the `MODELS` dictionary")
 
 # Create pre-trained model + classification block, with or without pre-trained weights
-my_model = create_model(model=args["model"],
+my_model = create_model(model_name=args["model"],
                         model_weights_path=args["weights"])
 
 # Dictionary to convert numerical classes to alphabet

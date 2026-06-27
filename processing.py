@@ -135,7 +135,7 @@ def preprocess_for_vgg(img, size=224, color=True):
 
 
 def edit_bg(img, bg_img_path):
-    """Change black background to another image pixel-by-pixel
+    """Change black background to another image
 
     Parameters
     ----------
@@ -154,10 +154,10 @@ def edit_bg(img, bg_img_path):
     img_back = cv2.imread(bg_img_path)
     height, width = img_front.shape[:2]
     resize_back = cv2.resize(img_back, (width, height), interpolation=cv2.INTER_CUBIC)
-    for i in range(width):
-        for j in range(height):
-            pixel = img_front[j, i]
-            if np.all(pixel == [0, 0, 0]):
-                img_front[j, i] = resize_back[j, i]
+
+    # Vectorized approach: find all black pixels
+    black_mask = np.all(img_front == [0, 0, 0], axis=2)
+    img_front[black_mask] = resize_back[black_mask]
+
     return img_front
 
