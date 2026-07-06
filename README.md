@@ -64,13 +64,68 @@ The ASL alphabet is 'fingerspelled' - this means all of the alphabet (26 letters
 This project is a (very small!) first step towards bridging the gap between 'signers' and 'non-signers'.
 
 # 2. Pre-processing
-coming soon I promise
+
+Raw images go through two steps before being fed into the model:
+
+**Square padding** — the hand region of interest (ROI) is unlikely to be perfectly square. Rather than stretching the image (which distorts hand shape), black padding is added to the shorter side to make it square whilst keeping the original proportions. Handled by `square_pad()` in `processing.py`.
+
+**VGG normalisation** — the image is resized to 224x224 pixels (the input size expected by the pre-trained networks) and zero-centred using the ImageNet mean pixel values:
+- Red: subtract 123.68
+- Green: subtract 116.779
+- Blue: subtract 103.939
+
+This normalisation matches what the pre-trained models saw during ImageNet training, which is important for transfer learning to work well.
+
+For the Massey University dataset, the green channel was dropped entirely to remove green screen background artefacts — with no noticeable drop in performance.
+
 # 3. Transfer learning & feature extraction
-coming soon
+
+Training a deep neural network from scratch requires a huge dataset and significant compute. Transfer learning sidesteps this — we take a model already trained on ImageNet (millions of images, 1000 classes) and repurpose its learned features for ASL classification.
+
+The approach used here is **bottleneck feature extraction**:
+
+1. Load a pre-trained network (VGG16, ResNet50, InceptionV3, Xception, or MobileNet) **without** its top classification layer
+2. Pass all training images through this frozen network to produce a compact feature vector per image
+3. Save those feature vectors to disk with `joblib`
+4. Train only a small custom classification block on top of those saved features
+
+This is much faster than training end-to-end — the heavy base model only needs to run once. Feature extraction was run on an AWS EC2 p2.8xlarge GPU instance.
+
+The custom classification block:
+```
+Flatten → Dense(256, ReLU) → Dropout(0.2) → Dense(26, Softmax)
+```
+The final layer outputs a probability for each of the 26 ASL letters.
+
 # 4. Training
-coming soon
+
+Training is handled by `training_scripts/new_classifier.py`. The base model layers are frozen — only the custom classification block is trained.
+
+Key training settings:
+- **Optimiser:** Adadelta
+- **Loss:** categorical cross-entropy
+- **Epochs:** 30 (configurable)
+- **Batch size:** 32 (configurable)
+- **Data augmentation:** random rotation (±15°), width/height shifts (±15%) — helps the model generalise to different hand positions and angles
+- **Callbacks:** ModelCheckpoint saves the best weights by validation accuracy
+
+Training and validation loss/accuracy are saved as `.npy` files for later analysis.
+
 # 5. Real-time system
-coming soon
+
+The live demo (`live_demo.py`) ties everything together:
+
+```
+Webcam → Capture frame → Crop ROI → Square pad → Normalise → Model → Display top 3 predictions
+```
+
+1. **Webcam capture** — OpenCV reads frames continuously from the default camera
+2. **ROI** — a fixed rectangle is drawn on screen; place your hand inside it. This region is cropped from each frame
+3. **Pre-processing** — the cropped hand image is padded, resized to 224x224, and normalised (see Section 2)
+4. **Prediction** — the full model (base network + classification block) runs inference on the processed frame
+5. **Display** — if the top prediction confidence exceeds 50%, the top 3 predicted letters are overlaid on the live feed. The most probable letter is shown large in the centre; 2nd and 3rd choices appear smaller at the bottom
+
+The 50% confidence threshold filters out low-quality frames (no hand present, partially obscured) to avoid noisy predictions.
 
 # 6. References
 https://research.gallaudet.edu/Publications/ASL_Users.pdf
