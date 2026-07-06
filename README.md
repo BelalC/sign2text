@@ -53,7 +53,7 @@ NOTE - On a MacBook Pro (macOS SIERRA 16GB 1600MHz DDR3/2.2 GHz Intel Core i7, y
 
 # 1. American Sign Language
 
-There are no accurate measurements of how many people use American Sign Lanuage (ASL) - estimates vary from 500,000 to 15 million people. However, 28 million Americans (~10% of the population) have some degree of hearing loss, and 2 million of these 28 million are classified as deaf. For many of these people, their first lanugage is ASL.
+There are no accurate measurements of how many people use American Sign Lanuage (ASL), as the US census has never counted it - estimates vary from 500,000 to 15 million people. However, 28 million Americans (~10% of the population) have some degree of hearing loss, and 2 million of these 28 million are classified as deaf. For many of these people, their first lanugage is ASL.
 
 The ASL alphabet is 'fingerspelled' - this means all of the alphabet (26 letters, from A-Z) can be spelled using one hand. There are 3 main use cases of fingerspelling in any sign language: 
 
