@@ -3,7 +3,7 @@
 
 The project focuses on translating American Sign Language (ASL) [fingerspelled alphabet](http://lifeprint.com/asl101/topics/wallpaper1.htm) (26 letters). I utilised transfer learning to extract features, followed by a custom classification block to classify letters. This model is then implemented in a real-time system with OpenCV - reading frames from a web camera and classifying them frame-by-frame. This repository contains the code & weights for classifying the American Sign Language (ASL) alphabet in real-time.
 
-This project was developed as my portfolio project at the Data Science Retreat (Batch 09) in Berlin. Please feel free to fork/comment/collaborate! Presentation slides are available in the repo :)
+This project was developed as my portfolio project at the Data Science Retreat (Batch 09) in Berlin in 2017; that's pre-Claude, so this is all 'artisanal hand-coding' (apart from recent pushes). Please feel free to fork/comment/collaborate! Presentation slides are available in the repo :)
 
 Dataset - https://drive.google.com/drive/folders/1-t8rgN3eOW99KGDy7U0HJhrbbwOe-5Wh?usp=sharing
 
